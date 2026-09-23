@@ -1,6 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
+import { CartContext } from "../context/CartContext";
 
 const ProductCard = ({ product }) => {
+  const { cartItems, setCartItems } = useContext(CartContext);
+  const handleProductItem = () => {
+    const existingProduct = cartItems.find((item) => item.id === product.id);
+
+    if (existingProduct) {
+      const updatedCart = cartItems.map((item) =>
+        item.id === product.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item,
+      );
+      setCartItems(updatedCart);
+    } else {
+      const newProduct = {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        category: product.category,
+        emoji: product.emoji,
+        quantity: 1,
+      };
+      setCartItems([...cartItems, newProduct]);
+    }
+  };
   return (
     <div
       key={product.id}
@@ -24,7 +48,10 @@ const ProductCard = ({ product }) => {
         <div className="mt-5 flex items-center justify-between">
           <span className="text-xl font-bold">€{product.price}</span>
 
-          <button className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold transition hover:bg-indigo-500">
+          <button
+            className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold transition hover:bg-indigo-500"
+            onClick={handleProductItem}
+          >
             Add to Cart
           </button>
         </div>
